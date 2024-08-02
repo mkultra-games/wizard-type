@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://bqmjj1qxt42uw"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_r4vrc"]
+[ext_resource type="PackedScene" uid="uid://bigj0kpvroogv" path="res://enemy.tscn" id="2_nrld7"]
+
+[sub_resource type="Gradient" id="Gradient_vuwjp"]
+colors = PackedColorArray(0.735133, 0.600676, 0.827814, 1, 0.774505, 0.785052, 0.955751, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_w7rwa"]
+gradient = SubResource("Gradient_vuwjp")
+fill_from = Vector2(0.275229, 0.376147)
+fill_to = Vector2(0.866973, 0.724771)
+
+[sub_resource type="Curve2D" id="Curve2D_t5fnh"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 1178, -13, 0, 0, 0, 0, 1180, 678)
+}
+point_count = 2
+
+[node name="main" type="Node2D"]
+script = ExtResource("1_r4vrc")
+enemy_scene = ExtResource("2_nrld7")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 1181.0
+offset_bottom = 668.0
+texture = SubResource("GradientTexture2D_w7rwa")
+
+[node name="EnemyPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_t5fnh")
+
+[node name="EnemySpawn" type="PathFollow2D" parent="EnemyPath"]
+position = Vector2(1178, -13)
+rotation = 1.5679
+
+[node name="EnemyTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="EnemyTimer" to="." method="_on_enemy_timer_timeout"]
