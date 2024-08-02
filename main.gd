@@ -7,6 +7,14 @@ var active_enemy = null
 var current_letter_index = -1
 var selection_index = 0
 
+func new_game():
+	$EnemyTimer.start()
+
+func game_over():
+	$EnemyTimer.stop()
+	$HUD/Retry.show()
+	
+
 func update_active_enemy_list():
 	active_enemy_list = get_tree().get_nodes_in_group("enemies")
 
@@ -30,7 +38,7 @@ func find_new_active_enemy(typed_character:String):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	new_game()
 
 func _on_enemy_timer_timeout():
 	var en = enemy_scene.instantiate()
@@ -42,10 +50,11 @@ func _on_enemy_timer_timeout():
 	en.position = en_spawn.position
 	en.rotation = direction
 	
-	var velocity = Vector2(randf_range(60.0,110.0),0.0)
+	var velocity = Vector2(randf_range(100.0,150.0),0.0)
 	en.linear_velocity = velocity.rotated(direction)
 	
 	add_child(en)
+	en.destroyed.connect($HUD/Score._on_en_destroyed.bind())
 	update_active_enemy_list()
 	if active_enemy == null:
 		if !active_enemy_list[0].get_dead():
@@ -56,8 +65,8 @@ func _on_enemy_timer_timeout():
 
 func _unhandled_key_input(event):
 	if event.pressed:
-		if event.as_text_key_label() == "Escape":
-			get_tree().call_group("enemies","not_selectable")
+		if event.as_text_key_label() == "Enter" and $HUD/Retry.visible:
+			get_tree().reload_current_scene()
 		elif event.as_text_key_label() == "Tab":
 			selection_index += 1
 			select_mode_enemy_list()
@@ -84,3 +93,7 @@ func _unhandled_key_input(event):
 					active_enemy.destroy()
 					active_enemy = null
 					update_active_enemy_list()
+
+
+func _on_death_zone_hit():
+	game_over();

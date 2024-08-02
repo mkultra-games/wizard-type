@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bqmjj1qxt42uw"]
+[gd_scene load_steps=8 format=3 uid="uid://bqmjj1qxt42uw"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_r4vrc"]
 [ext_resource type="PackedScene" uid="uid://bigj0kpvroogv" path="res://enemy.tscn" id="2_nrld7"]
+[ext_resource type="PackedScene" uid="uid://c3c2mbnhewdrh" path="res://death_zone.tscn" id="3_f06dj"]
+[ext_resource type="PackedScene" uid="uid://dl2vwq2nilrg0" path="res://hud.tscn" id="4_13tks"]
 
 [sub_resource type="Gradient" id="Gradient_vuwjp"]
 colors = PackedColorArray(0.735133, 0.600676, 0.827814, 1, 0.774505, 0.785052, 0.955751, 1)
@@ -34,6 +36,10 @@ position = Vector2(1178, -13)
 rotation = 1.5679
 
 [node name="EnemyTimer" type="Timer" parent="."]
-autostart = true
+
+[node name="DeathZone" parent="." instance=ExtResource("3_f06dj")]
+
+[node name="HUD" parent="." instance=ExtResource("4_13tks")]
 
 [connection signal="timeout" from="EnemyTimer" to="." method="_on_enemy_timer_timeout"]
+[connection signal="hit" from="DeathZone" to="." method="_on_death_zone_hit"]
