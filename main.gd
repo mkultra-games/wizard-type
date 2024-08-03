@@ -4,7 +4,6 @@ extends Node2D
 
 var active_enemy_list: Array[Enemy] = []
 var active_enemy: Enemy = null
-var current_letter_index := -1
 var selection_index := 0
 
 @onready var enemy_timer: Timer = $EnemyTimer
@@ -23,7 +22,6 @@ func game_over() -> void:
 
 
 func select_mode_enemy_list() -> void:
-	current_letter_index = -1
 	get_tree().call_group("enemies", "selectable")
 	select_enemy(active_enemy_list[selection_index])
 
@@ -34,14 +32,15 @@ func select_enemy(enemy: Enemy) -> void:
 	active_enemy.select()
 
 
-func find_new_active_enemy(typed_character: String) -> void:
-	var enemy := $Enemy as Enemy
-	var prompt := enemy.get_prompt()
-	if prompt.substr(0, 1) == typed_character:
-		active_enemy = enemy
-		active_enemy.select()
-		current_letter_index = 1
-		active_enemy.set_text_completion(prompt, current_letter_index)
+# TODO: fully implement
+#func find_new_active_enemy(typed_character: String) -> void:
+#var enemy := $Enemy as Enemy
+#var prompt := enemy.get_prompt()
+#if prompt.substr(0, 1) == typed_character:
+#active_enemy = enemy
+#active_enemy.select()
+#current_letter_index = 1
+#active_enemy.set_text_completion(prompt, current_letter_index)
 
 
 func _ready() -> void:
@@ -95,20 +94,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			select_mode_enemy_list()
 		else:
 			get_tree().call_group("enemies", "not_selectable")
-			var prompt := active_enemy.get_prompt()
-			if current_letter_index == -1:
-				if prompt.substr(0, 1) == key.as_text_key_label():
-					current_letter_index = 1
-					active_enemy.set_text_completion(prompt, current_letter_index)
-			else:
-				var next_letter := prompt.substr(current_letter_index, 1)
-				if key.as_text_key_label() == next_letter:
-					current_letter_index += 1
-					active_enemy.set_text_completion(prompt, current_letter_index)
-				if prompt.length() <= current_letter_index:
-					current_letter_index = -1
-					active_enemy.destroy()
-					active_enemy = null
+			active_enemy.receive_key(key)
 
 
 func _on_death_zone_hit() -> void:
