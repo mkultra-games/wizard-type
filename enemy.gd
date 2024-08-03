@@ -14,17 +14,6 @@ var prompt := ""
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 
-func _process(_delta: float) -> void:
-	if search and !selected:
-		select_target.show()
-		select_target.play("visible")
-	if selected:
-		select_target.show()
-		select_target.play("selected")
-	if !selected and !search:
-		select_target.hide()
-
-
 func _ready() -> void:
 	set_prompt()
 	var enemy_types := sprite.sprite_frames.get_animation_names()
@@ -39,18 +28,27 @@ func set_prompt() -> void:
 
 func select() -> void:
 	selected = true
+	select_target.show()
+	select_target.play("selected")
 
 
 func selectable() -> void:
 	search = true
+	if !selected:
+		select_target.show()
+		select_target.play("visible")
 
 
 func deselect() -> void:
+	if selected:
+		select_target.hide()
 	selected = false
 
 
 func not_selectable() -> void:
 	search = false
+	if !selected:
+		select_target.hide()
 
 
 func get_dead() -> bool:
