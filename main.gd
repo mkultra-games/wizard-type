@@ -27,7 +27,7 @@ func select_enemy(enemy: Enemy) -> void:
 	active_enemy.select()
 
 
-# TODO: fully implement
+# TODO: missing feature (picking enemy by first letter?)
 #func find_new_active_enemy(typed_character: String) -> void:
 #var enemy := $Enemy as Enemy
 #var prompt := enemy.get_prompt()
