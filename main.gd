@@ -21,11 +21,6 @@ func game_over() -> void:
 	hud_retry.show()
 
 
-func select_mode_enemy_list() -> void:
-	get_tree().call_group("enemies", "selectable")
-	select_enemy(active_enemy_list[selection_index])
-
-
 func select_enemy(enemy: Enemy) -> void:
 	get_tree().call_group("enemies", "deselect")
 	active_enemy = enemy
@@ -69,6 +64,7 @@ func _on_enemy_timer_timeout() -> void:
 	en.linear_velocity = velocity.rotated(direction)
 
 	add_child(en)
+
 	var err := en.destroyed.connect(hud_score._on_en_destroyed.bind())
 	if err:
 		printerr("failed to bind signal: %s" % err)
@@ -94,9 +90,14 @@ func _unhandled_key_input(event: InputEvent) -> void:
 				if err:
 					printerr("failed to reload scene: %s" % err)
 		KEY_TAB:
-			selection_index += 1
-			select_mode_enemy_list()
+			selection_index = (selection_index + 1) % active_enemy_list.size()
+			get_tree().call_group("enemies", "selectable")
+			select_enemy(active_enemy_list[selection_index])
 		_:
+			if active_enemy == null:
+				return
+
+			selection_index = 0
 			get_tree().call_group("enemies", "not_selectable")
 			active_enemy.receive_key(key)
 
