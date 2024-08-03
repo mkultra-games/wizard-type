@@ -38,13 +38,9 @@ func get_prompt() -> String:
 
 
 func set_text_completion(sent_prompt: String, current_index: int) -> void:
-	prompt.text = (
-		"[center][color=green]"
-		+ sent_prompt.substr(0, current_index)
-		+ "[/color]"
-		+ sent_prompt.substr(current_index)
-		+ "[/center]"
-	)
+	var complete := sent_prompt.substr(0, current_index)
+	var incomplete := sent_prompt.substr(current_index)
+	prompt.text = ("[center][color=green]%s[/color]%s[/center]" % [complete, incomplete])
 
 
 func select() -> void:
@@ -69,10 +65,10 @@ func get_dead() -> bool:
 
 func destroy() -> void:
 	dead = true
+	const WAVE := "amp=50.0 freq=5.0 connected=1"
+	const RAINBOW := "freq=1.0 sat=0.8 val=0.8"
 	prompt.text = (
-		"[center][wave amp=50.0 freq=5.0 connected=1][rainbow freq=1.0 sat=0.8 val=0.8]"
-		+ get_prompt()
-		+ "[/rainbow][/wave][/center]"
+		"[center][wave %s][rainbow %s]%s[/rainbow][/wave][/center]" % [WAVE, RAINBOW, get_prompt()]
 	)
 	await get_tree().create_timer(0.25).timeout
 	destroyed.emit()
