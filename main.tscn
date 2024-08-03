@@ -15,7 +15,7 @@ fill_to = Vector2(0.866973, 0.724771)
 
 [sub_resource type="Curve2D" id="Curve2D_t5fnh"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 1178, -13, 0, 0, 0, 0, 1180, 678)
+"points": PackedVector2Array(0, 0, 0, 0, 1180, 20, 0, 0, 0, 0, 1180, 600)
 }
 point_count = 2
 
@@ -32,8 +32,8 @@ texture = SubResource("GradientTexture2D_w7rwa")
 curve = SubResource("Curve2D_t5fnh")
 
 [node name="EnemySpawn" type="PathFollow2D" parent="EnemyPath"]
-position = Vector2(1178, -13)
-rotation = 1.5679
+position = Vector2(1180, 20)
+rotation = 1.5708
 
 [node name="EnemyTimer" type="Timer" parent="."]
 
