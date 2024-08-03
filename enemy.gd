@@ -51,10 +51,6 @@ func not_selectable() -> void:
 		select_target.hide()
 
 
-func get_dead() -> bool:
-	return dead
-
-
 func receive_key(event: InputEventKey) -> void:
 	# If the user double-tapped on the same frame, we might already be dead
 	if dead:
