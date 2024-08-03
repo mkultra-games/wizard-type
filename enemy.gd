@@ -1,7 +1,7 @@
 class_name Enemy
 extends RigidBody2D
 
-signal destroyed
+signal destroyed(enemy: Enemy)
 
 var search := false
 var selected := false
@@ -71,5 +71,5 @@ func destroy() -> void:
 		"[center][wave %s][rainbow %s]%s[/rainbow][/wave][/center]" % [WAVE, RAINBOW, get_prompt()]
 	)
 	await get_tree().create_timer(0.25).timeout
-	destroyed.emit()
+	destroyed.emit(self)
 	queue_free()

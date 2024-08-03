@@ -22,10 +22,6 @@ func game_over() -> void:
 	hud_retry.show()
 
 
-func update_active_enemy_list() -> void:
-	active_enemy_list.assign(get_tree().get_nodes_in_group("enemies"))
-
-
 func select_mode_enemy_list() -> void:
 	current_letter_index = -1
 	get_tree().call_group("enemies", "selectable")
@@ -48,9 +44,17 @@ func find_new_active_enemy(typed_character: String) -> void:
 		active_enemy.set_text_completion(prompt, current_letter_index)
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	new_game()
+
+
+func _on_enemy_destroyed(enemy: Enemy) -> void:
+	active_enemy_list.erase(enemy)
+	oldest_enemy_active()
+
+
+func oldest_enemy_active() -> void:
+	select_enemy(active_enemy_list[0])
 
 
 func _on_enemy_timer_timeout() -> void:
@@ -70,12 +74,13 @@ func _on_enemy_timer_timeout() -> void:
 	if err:
 		printerr("failed to bind signal: %s" % err)
 
-	update_active_enemy_list()
+	err = en.destroyed.connect(_on_enemy_destroyed.bind())
+	if err:
+		printerr("failed to bind signal: %s" % err)
+
+	active_enemy_list.push_back(en)
 	if active_enemy == null:
-		if !active_enemy_list[0].get_dead():
-			select_enemy(active_enemy_list[0])
-		else:
-			select_enemy(active_enemy_list[1])
+		oldest_enemy_active()
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -89,12 +94,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			selection_index += 1
 			select_mode_enemy_list()
 		else:
-			if active_enemy == null:
-				update_active_enemy_list()
-				if !active_enemy_list[0].get_dead():
-					select_enemy(active_enemy_list[0])
-				else:
-					select_enemy(active_enemy_list[1])
 			get_tree().call_group("enemies", "not_selectable")
 			var prompt := active_enemy.get_prompt()
 			if current_letter_index == -1:
@@ -110,7 +109,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
 					current_letter_index = -1
 					active_enemy.destroy()
 					active_enemy = null
-					update_active_enemy_list()
 
 
 func _on_death_zone_hit() -> void:
