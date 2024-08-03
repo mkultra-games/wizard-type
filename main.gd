@@ -84,15 +84,19 @@ func _on_enemy_timer_timeout() -> void:
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	var key := event as InputEventKey
-	if key.pressed:
-		if key.as_text_key_label() == "Enter" and hud_retry.visible:
-			var err := get_tree().reload_current_scene()
-			if err:
-				printerr("failed to reload scene: %s" % err)
-		elif key.as_text_key_label() == "Tab":
+	if !key.pressed:
+		return
+
+	match key.keycode:
+		KEY_ENTER:
+			if hud_retry.visible:
+				var err := get_tree().reload_current_scene()
+				if err:
+					printerr("failed to reload scene: %s" % err)
+		KEY_TAB:
 			selection_index += 1
 			select_mode_enemy_list()
-		else:
+		_:
 			get_tree().call_group("enemies", "not_selectable")
 			active_enemy.receive_key(key)
 
