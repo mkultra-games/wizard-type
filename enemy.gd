@@ -9,7 +9,7 @@ var dead := false
 var current_letter_idx := 0
 var prompt := ""
 
-@onready var label: RichTextLabel = $AnimatedSprite2D/RichTextLabel
+@onready var label: RichTextLabel = $RichTextLabel
 @onready var select_target: AnimatedSprite2D = $SelectTarget
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 
